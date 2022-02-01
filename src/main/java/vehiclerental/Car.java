@@ -13,7 +13,6 @@ public class Car implements Rentable{
         this.minutesPrice = minutesPrice;
     }
 
-
     @Override
     public int calculateSumPrice(long minutes) {
         return (int) (minutesPrice * minutes);
@@ -26,18 +25,12 @@ public class Car implements Rentable{
 
     @Override
     public void rent(LocalTime time) {
-        this.rentingTime = time;
+        rentingTime = time;
 
     }
 
     @Override
     public void closeRent() {
-        this.rentingTime = null;
-
-    }
-
-    @Override
-    public int compareTo(Rentable o) {
-        return 0;
+        rentingTime = null;
     }
 }

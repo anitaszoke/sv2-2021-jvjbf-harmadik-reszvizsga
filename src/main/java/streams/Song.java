@@ -8,7 +8,7 @@ public class Song {
 
     private String title;
     private int length;
-    private List<String> performers = new ArrayList<>();
+    private List<String> performers;
     private LocalDate release;
 
     public Song(String title, int length, List<String> performers, LocalDate release) {

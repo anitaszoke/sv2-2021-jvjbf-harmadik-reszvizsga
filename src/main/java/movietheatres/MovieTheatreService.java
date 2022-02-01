@@ -12,8 +12,7 @@ public class MovieTheatreService {
     public static final String SEPARATOR_CINEMA_FILM = "-";
     public static final String SEPARATOR_FILM_TIME = ";";
 
-    private List<Movie> movies = new ArrayList<>();
-    private Map<String, List<Movie>> shows = new LinkedHashMap<>();
+    private final Map<String, List<Movie>> shows = new LinkedHashMap<>();
 
     public Map<String, List<Movie>> getShows() {
         return shows;
@@ -23,17 +22,10 @@ public class MovieTheatreService {
         String line;
 
         try {
-            BufferedReader reader = Files.newBufferedReader(path);
-            while ((line = reader.readLine()) != null) {
-                String key = parseLineCinema(line);
-                String title = parseLineTitle(line);
-                LocalTime time = parseLineTime(line);
-
-                shows.putIfAbsent(key, new ArrayList<>());
-                movies = shows.get(key);
-                movies.add(new Movie(title, time));
-                movies.sort(Comparator.comparing(Movie::getStartTime));
-
+            try (BufferedReader reader = Files.newBufferedReader(path)) {
+                while ((line = reader.readLine()) != null) {
+                    addShow(line);
+                }
             }
         } catch (IOException ioe) {
             throw new IllegalStateException("Error by parsing, general io", ioe);
@@ -42,27 +34,94 @@ public class MovieTheatreService {
 
     private String parseLineCinema(String line) {
         String[] fullLine = line.split(SEPARATOR_CINEMA_FILM);
-        String cinema = fullLine[0];
-
-        return cinema;
+        return fullLine[0];
     }
 
     private String parseLineTitle(String line) {
         String[] fullLine = line.split(SEPARATOR_CINEMA_FILM);
-
         String[] titleAndTime = fullLine[1].split(SEPARATOR_FILM_TIME);
-        String title = titleAndTime[0];
 
-        return title;
+        return titleAndTime[0];
     }
 
     private LocalTime parseLineTime(String line) {
         String[] fullLine = line.split(SEPARATOR_CINEMA_FILM);
-
         String[] titleAndTime = fullLine[1].split(SEPARATOR_FILM_TIME);
-        LocalTime time = LocalTime.parse(titleAndTime[1]);
 
-        return time;
+        return LocalTime.parse(titleAndTime[1]);
     }
 
+    private void addShow(String line) {
+        String key = parseLineCinema(line);
+        String title = parseLineTitle(line);
+        LocalTime time = parseLineTime(line);
+
+        shows.putIfAbsent(key, new ArrayList<>());
+        List<Movie> movies = shows.get(key);
+        movies.add(new Movie(title, time));
+        movies.sort(Comparator.comparing(Movie::getStartTime));
+    }
+
+
+    public List<String> findMovie(String title) {
+//        Set<String> findTitle = new LinkedHashSet<>();
+//        for (Map.Entry<String, List<Movie>> entry : shows.entrySet()) {
+//            for (Movie m : entry.getValue()) {
+//                if (m.getTitle().equals(title)) {
+//                    findTitle.add(entry.getKey());
+//                }
+//            }
+//        }
+//        return new ArrayList<>(findTitle);
+
+
+//        return shows.entrySet().stream()
+//                .filter(entry -> entry.getValue().stream()
+//                        .anyMatch(movie -> movie.getTitle().equals(title)))
+//                .map(stringListEntry -> stringListEntry.getKey())
+//                .toList();
+
+        return shows.entrySet().stream()
+                .filter(entry -> entry.getValue().stream()
+                        .anyMatch(movie -> movie.getTitle().equals(title)))
+                .map(Map.Entry::getKey)
+                .toList();
+
+    }
+
+    public LocalTime findLatestShow(String title) {
+//        LocalTime latestShow =
+//
+//        for (Map.Entry<String, List<Movie>> entry : shows.entrySet()) {
+//            for (Movie m : entry.getValue()) {
+//                if (m.getTitle().equals(title) && m.getStartTime().isAfter(latestShow)) {
+//
+//                        latestShow = m.getStartTime();
+//
+//                } else {
+//                    throw new IllegalArgumentException("Not found title");
+//                }
+//            }
+//        }
+//        return latestShow;
+
+
+//        return shows.entrySet().stream()
+//                .flatMap(e -> e.getValue().stream())
+//                .filter(movie -> movie.getTitle().equals(title))
+//                .max(Comparator.comparing(movie1 -> movie1.getStartTime()))
+//                .orElseThrow(() -> new IllegalArgumentException("Not found movie"))
+//                .getStartTime();
+
+        return shows.values().stream()
+                .flatMap(List::stream)
+                .filter(movie -> movie.getTitle().equals(title))
+                .max(Comparator.comparing(Movie::getStartTime))
+                .orElseThrow(() -> new IllegalArgumentException("Not found movie"))
+                .getStartTime();
+
+
+    }
 }
+
+

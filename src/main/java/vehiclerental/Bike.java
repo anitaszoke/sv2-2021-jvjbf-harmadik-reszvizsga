@@ -2,7 +2,9 @@ package vehiclerental;
 
 import java.time.LocalTime;
 
-public class Bike implements Rentable{
+public class Bike implements Rentable {
+
+    private static final int PRICE_PER_MINUTE = 15;
 
     private String bikeId;
     private LocalTime rentingTime;
@@ -17,7 +19,7 @@ public class Bike implements Rentable{
 
     @Override
     public int calculateSumPrice(long minutes) {
-        return (int) (15 * minutes);
+        return (int) (PRICE_PER_MINUTE * minutes);
     }
 
     @Override
@@ -27,18 +29,12 @@ public class Bike implements Rentable{
 
     @Override
     public void rent(LocalTime time) {
-
+        rentingTime = time;
     }
 
     @Override
     public void closeRent() {
-
+        rentingTime = null;
     }
 
-    @Override
-    public int compareTo(Rentable o1) {
-
-        Bike o2;
-        return o1.getRentingTime()-(Rentable)o2.getRentingTime();
-    }
 }

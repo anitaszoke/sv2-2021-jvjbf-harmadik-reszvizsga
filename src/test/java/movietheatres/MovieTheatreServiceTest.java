@@ -31,21 +31,21 @@ public class MovieTheatreServiceTest {
        assertEquals(List.of("Paw Petrol", "Lord Of The Rings"), mvs.getShows().get("Puskin").stream().map(Movie::getTitle).toList());
     }
 
-//    @Test
-//    void testFindMovie() {
-//        assertEquals(List.of("WestEnd", "Duna Plaza"), mvs.findMovie("Star Wars"));
-//        assertTrue(mvs.findMovie("Indinana Jones").isEmpty());
-//    }
+    @Test
+    void testFindMovie() {
+        assertEquals(List.of("WestEnd", "Duna Plaza"), mvs.findMovie("Star Wars"));
+        assertTrue(mvs.findMovie("Indinana Jones").isEmpty());
+    }
 
-//    @Test
-//    void testFindLatestShowTest() {
-//        assertEquals(LocalTime.of(20,45),mvs.findLatestShow("Lord Of The Rings"));
-//        assertEquals(LocalTime.of(19,45),mvs.findLatestShow("Star Wars"));
-//    }
-//
-//    @Test
-//    void testFindLatestShowWithWrongName(){
-//        assertThrows(IllegalArgumentException.class,()->mvs.findLatestShow("Indiana Jones"));
-//    }
+    @Test
+    void testFindLatestShowTest() {
+        assertEquals(LocalTime.of(20,45),mvs.findLatestShow("Lord Of The Rings"));
+        assertEquals(LocalTime.of(19,45),mvs.findLatestShow("Star Wars"));
+    }
+
+    @Test
+    void testFindLatestShowWithWrongName(){
+        assertThrows(IllegalArgumentException.class,()->mvs.findLatestShow("Indiana Jones"));
+    }
 
 }

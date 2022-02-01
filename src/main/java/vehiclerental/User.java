@@ -25,9 +25,6 @@ public class User {
     }
 
     public void minusBalance(int amount) {
-        if (balance == 0) {
-            throw new IllegalArgumentException("Balance cant be minus");
-        }
-        this.balance = balance - amount;
+        balance -= amount;
     }
 }

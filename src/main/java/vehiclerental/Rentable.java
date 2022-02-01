@@ -4,8 +4,6 @@ import java.time.LocalTime;
 
 public interface Rentable extends Comparable<Rentable>{
 
-
-
     int calculateSumPrice(long minutes);
 
     LocalTime getRentingTime();
@@ -15,5 +13,7 @@ public interface Rentable extends Comparable<Rentable>{
     void closeRent();
 
     @Override
-    int compareTo(Rentable o);
+    default int compareTo(Rentable other) {
+        return this.getRentingTime().compareTo(other.getRentingTime());
+    }
 }
