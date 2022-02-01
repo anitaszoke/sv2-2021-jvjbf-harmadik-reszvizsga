@@ -90,20 +90,20 @@ public class MovieTheatreService {
     }
 
     public LocalTime findLatestShow(String title) {
-//        LocalTime latestShow =
-//
+//        LocalTime latestShow = LocalTime.of(0,1);
 //        for (Map.Entry<String, List<Movie>> entry : shows.entrySet()) {
 //            for (Movie m : entry.getValue()) {
 //                if (m.getTitle().equals(title) && m.getStartTime().isAfter(latestShow)) {
 //
-//                        latestShow = m.getStartTime();
-//
-//                } else {
-//                    throw new IllegalArgumentException("Not found title");
+//                    latestShow = m.getStartTime();
 //                }
 //            }
 //        }
+//        if (latestShow.equals(LocalTime.of(0,1))) {
+//            throw new IllegalArgumentException("Title not found!");
+//        }
 //        return latestShow;
+
 
 
 //        return shows.entrySet().stream()
