@@ -2,9 +2,6 @@ package streams;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 public class SongService {
 
@@ -18,12 +15,8 @@ public class SongService {
     }
 
     public Optional<Song> shortestSong() {
-        Song sortSong = songs.stream()
-                .min(Comparator.comparingInt(Song::getLength))
-                .orElseThrow(NoSuchElementException::new);
-
-        return Optional.of(sortSong);
-
+        return songs.stream()
+                .min(Comparator.comparingInt(Song::getLength));
     }
 
     public List<Song> findSongByTitle(String title) {

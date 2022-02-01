@@ -1,8 +1,8 @@
 package movietheatres;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalTime;
 import java.util.*;
@@ -12,61 +12,57 @@ public class MovieTheatreService {
     public static final String SEPARATOR_CINEMA_FILM = "-";
     public static final String SEPARATOR_FILM_TIME = ";";
 
-    private Map<String, String> shows = new Map<>();
+    private List<Movie> movies = new ArrayList<>();
+    private Map<String, List<Movie>> shows = new LinkedHashMap<>();
 
-    public Map<String, String> getShows() {
+    public Map<String, List<Movie>> getShows() {
         return shows;
     }
 
-    public Map<String, String> readFromFile(Path path) {
+    public void readFromFile(Path path) {
         String line;
-        List<String> strings = new ArrayList<>();
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(String.valueOf(path)));
+            BufferedReader reader = Files.newBufferedReader(path);
             while ((line = reader.readLine()) != null) {
-                strings.add(line);
+                String key = parseLineCinema(line);
+                String title = parseLineTitle(line);
+                LocalTime time = parseLineTime(line);
+
+                shows.putIfAbsent(key, new ArrayList<>());
+                movies = shows.get(key);
+                movies.add(new Movie(title, time));
+                movies.sort(Comparator.comparing(Movie::getStartTime));
 
             }
         } catch (IOException ioe) {
             throw new IllegalStateException("Error by parsing, general io", ioe);
         }
-        return createShows(strings);
     }
 
-    public List<String> findMovie(String title) {
-        List<String> findTitle = new ArrayList<>();
-        for (Map.Entry<String, String> entry : shows.entrySet()) {
-            if (entry.getValue().equals(title)) {
-                findTitle.add(entry.getKey());
-            }
-        }
-        return findTitle;
+    private String parseLineCinema(String line) {
+        String[] fullLine = line.split(SEPARATOR_CINEMA_FILM);
+        String cinema = fullLine[0];
+
+        return cinema;
     }
 
-    public LocalTime findLatestShow(String title) {
-        LocalTime latestShow;
-        for (Map.Entry<String, String> entry : shows.entrySet()) {
-            if (entry.getValue().equals(title)) {
-                latestShow = entry.getValue().
-            } else {
-                throw new IllegalArgumentException();
-            }
-        }
-        return latestShow;
+    private String parseLineTitle(String line) {
+        String[] fullLine = line.split(SEPARATOR_CINEMA_FILM);
+
+        String[] titleAndTime = fullLine[1].split(SEPARATOR_FILM_TIME);
+        String title = titleAndTime[0];
+
+        return title;
     }
 
+    private LocalTime parseLineTime(String line) {
+        String[] fullLine = line.split(SEPARATOR_CINEMA_FILM);
 
-    private Map<String, String> createShows(List<String> strings) {
-        String key = "";
-        String value = "";
-        for (String s : strings) {
-            String[] temp = s.split(SEPARATOR_CINEMA_FILM);
-            key = temp[0];
-            value = temp[1];
+        String[] titleAndTime = fullLine[1].split(SEPARATOR_FILM_TIME);
+        LocalTime time = LocalTime.parse(titleAndTime[1]);
 
-            shows.put(key, value);
-        }
-        return shows;
+        return time;
     }
+
 }
